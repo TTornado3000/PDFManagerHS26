@@ -43,14 +43,14 @@ class Handler(FileSystemEventHandler):
             #buffer time for file to be written
             time.sleep(1)
 
-            print(f"{BLUE}New file detected{RESET}")
+            print(f"{BLUE}New file detected!{RESET}")
 
         except FileNotFoundError:
-            print(f"{RED}File not found{RESET}")
+            print(f"{RED}File not found!{RESET}")
         except PermissionError:
-            print(f"{RED}Permission denied{RESET}")
+            print(f"{RED}Permission denied!{RESET}")
         except Exception as e:
-            print(f"{RED}Error processing file {e}{RESET}")
+            print(f"{RED}Error processing file {e}!{RESET}")
 
 
 if __name__ == '__main__':
