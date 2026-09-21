@@ -35,7 +35,22 @@ class Handler(FileSystemEventHandler):
 
     #event handler called when watchdog detects new file in download
     def on_created(self, event):
-        print("New file detected")
+        RED = '\033[91m'
+        BLUE = '\033[94m'
+        RESET = '\033[0m'
+
+        try:
+            #buffer time for file to be written
+            time.sleep(1)
+
+            print(f"{BLUE}New file detected{RESET}")
+
+        except FileNotFoundError:
+            print(f"{RED}File not found{RESET}")
+        except PermissionError:
+            print(f"{RED}Permission denied{RESET}")
+        except Exception as e:
+            print(f"{RED}Error processing file {e}{RESET}")
 
 
 if __name__ == '__main__':
