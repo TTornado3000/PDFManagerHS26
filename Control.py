@@ -1,4 +1,4 @@
-import Watcher
+from Watcher import Watcher
 import Classifier
 
 
@@ -9,6 +9,11 @@ class Control:
 
     def run(self):
         print("Here I am")
-        #print(self.Running)
+        watcher = Watcher(self)
+        watcher.run()
 
-        watcher = Watcher
+    def file_created(self, path):
+        print("File created: ", path)
+
+
+

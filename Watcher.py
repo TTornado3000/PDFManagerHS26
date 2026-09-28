@@ -1,6 +1,6 @@
+import subprocess
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-import os
 import time
 
 
@@ -9,12 +9,13 @@ class Watcher:
     DIRECTORY_TO_WATCH = r"C:\Users\Admin\Downloads"
 
     #Watcher classes constructor
-    def __init__(self, script_to_run):
+    def __init__(self, control):
         self.observer = Observer()
-        self.script_to_run = script_to_run
+        self.control = control
 
     def run(self):
-        event_Handler = Handler(self.script_to_run)
+        print("hey")
+        event_Handler = EventHandler(self.control)
 
         #tells watchdog to watch directory and let handler deal with it
         self.observer.schedule(event_Handler, self.DIRECTORY_TO_WATCH, recursive=False)
@@ -28,31 +29,38 @@ class Watcher:
             self.observer.join()
 
 
-class Handler(FileSystemEventHandler):
+#Todo: The Logger should take care of printing or logging changes
 
-    def __init__(self, script_to_run):
-        self.script_to_run = script_to_run
+def on_createddd(event):
+    RED = '\033[91m'
+    BLUE = '\033[94m'
+    RESET = '\033[0m'
 
-    #event handler called when watchdog detects new file in download
+    try:
+        #buffer time for file to be written
+        time.sleep(1)
+
+        #Calls out change and executes the external script
+        print(f"{BLUE}New file detected!{RESET}")
+        return True
+        #subprocess.run(["python", self.script_to_run], check=True)
+
+    except FileNotFoundError:
+        print(f"{RED}File not found!{RESET}")
+    except PermissionError:
+        print(f"{RED}Permission denied!{RESET}")
+    except Exception as e:
+        print(f"{RED}Error processing file {e}!{RESET}")
+
+
+class EventHandler(FileSystemEventHandler):
+    def __init__(self, control):
+        self.control = control
+        print("yo")
     def on_created(self, event):
-        RED = '\033[91m'
-        BLUE = '\033[94m'
-        RESET = '\033[0m'
-
-        try:
-            #buffer time for file to be written
-            time.sleep(1)
-
-            print(f"{BLUE}New file detected!{RESET}")
-
-        except FileNotFoundError:
-            print(f"{RED}File not found!{RESET}")
-        except PermissionError:
-            print(f"{RED}Permission denied!{RESET}")
-        except Exception as e:
-            print(f"{RED}Error processing file {e}!{RESET}")
+        if not event.is_directory:
+            print("Here we are")
+            self.control.file_created(event.src_path)
 
 
-if __name__ == '__main__':
-    w = Watcher(r"C:\Users\Admin\PycharmProjects\PDFManager\Classifier")
-    w.run()
+
