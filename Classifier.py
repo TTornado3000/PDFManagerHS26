@@ -1,5 +1,7 @@
 import os
 import pdfplumber
+
+import Organizer
 from Watcher import Watcher
 
 
@@ -10,15 +12,15 @@ def classify():
             continue
         try:
             #loops each category
-            for category, target_words in keywords.items():
+            for filename_beginning, data in keywords.items():
                 #compares them with the current file
-                if category in file_name:
-                    if check_Category_PDF(file_name, target_words):
-                        print(f"matching file: ", file_name)
-                        break
+                if filename_beginning in file_name:
+                    if check_Category_PDF(file_name, data["keywords"]):
+                        print(f"matching file: ", file_name, filename_beginning)
+                        return data["category"]
 
         except KeyboardInterrupt:
-            print("failed")
+            print("Program closed")
 
 
 def check_Category_PDF(file_name, target_words):
@@ -42,13 +44,50 @@ def check_Category_PDF(file_name, target_words):
     return False
 
 
-keywords = {"dist": ["Discrete Structures", "Helmert"],
-            "sheet": ["Discrete Structures", "Helmert"],
-            "cs256": ["Databases", "cs256", "Schuldt"],
-            "Woche": ["Software Engineering", "Schnider"],
-            "00_": ["Linear Systems", "Equation"],
-            "01_": ["Linear Systems", "Equation"],
-            "02_": ["Linear Systems"],
-            "Serie": ["Einführung in die Statistik"],
-            "PR": ["Pattern Recognition", "Neurons"]}
+keywords = {
+
+    "dist": {
+        "category": "Discrete Structures",
+        "keywords": ["Discrete Structures", "Helmert"]
+    },
+
+    "sheet": {
+        "category": "Discrete Structures",
+        "keywords": ["Discrete Structures", "Helmert"]
+    },
+
+    "cs256": {
+        "category": "Databases",
+        "keywords": ["Databases", "cs256", "Schuldt"]
+    },
+
+    "Woche": {
+        "category": "Software Engineering",
+        "keywords": ["Software Engineering", "Schnider"]
+    },
+
+    "00_": {
+        "category": "Scientific Computing",
+        "keywords": ["Scientific Computing", "Linear Systems"]
+    },
+
+    "01_": {
+        "category": "Scientific Computing",
+        "keywords": ["Scientific Computing", "Linear Systems"]
+    },
+    "02_": {
+        "category": "Scientific Computing",
+        "keywords": ["Scientific Computing"]
+    },
+    "Serie": {
+        "category": "Einführung in die Statistik",
+        "keywords": ["Einführung in die Statistik"]
+    },
+    "PR": {
+        "category": "Pattern Recognition",
+        "keywords": ["Pattern Recognition", "Neurons"]
+    }
+
+}
+
 classify()
